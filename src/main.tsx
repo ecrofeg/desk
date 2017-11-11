@@ -2,10 +2,11 @@ import './css/main.scss';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import Dashboard from './components/Dashboard';
 
 ReactDOM.render(
 	<MuiThemeProvider>
-		<div>Hello World!</div>
+		<Dashboard/>
 	</MuiThemeProvider>,
-	document.getElementById('root')
+	window.document.getElementById('root')
 );

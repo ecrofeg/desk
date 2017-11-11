@@ -9,7 +9,7 @@ const db = mysql.createConnection({
 	database: process.env.DB_NAME
 });
 
-router.get('/task', (req, res) => {
+router.get('/task', (req: express.Request, res: express.Response) => {
 	db.query('SELECT * FROM task', (error: mysql.MysqlError | null, results: any) => {
 		res.json(results);
 	});
