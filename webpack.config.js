@@ -10,7 +10,7 @@ const extractSass = new ExtractTextPlugin({
 
 const config = {
 	context: __dirname,
-	entry: './src/main.ts',
+	entry: './src/main.tsx',
 	watch: isDevMode,
 
 	watchOptions: {

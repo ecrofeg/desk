@@ -4,7 +4,13 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "eslint": "eslint . --ext .jsx,.jsx",
+    "server": "nodemon server.js",
+    "build": "npm run eslint && cross-env NODE_ENV=production webpack",
+    "build-dev": "cross-env NODE_ENV=dev webpack",
+    "dev": "run-p build-dev server",
+    "prepublish": "npm run eslint && npm run test && npm run build",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -17,14 +23,21 @@
   },
   "homepage": "https://github.com/ecrofeg/desk#readme",
   "devDependencies": {
+    "@types/material-ui": "^0.18.4",
+    "@types/react": "^16.0.22",
+    "@types/react-dom": "^16.0.3",
+    "@types/react-tap-event-plugin": "0.0.30",
     "autoprefixer": "^7.1.6",
+    "compression": "^1.7.1",
     "cross-env": "^5.1.1",
     "css-loader": "^0.28.7",
     "eslint": "^4.11.0",
     "eslint-plugin-react": "^7.4.0",
     "express": "^4.16.2",
     "extract-text-webpack-plugin": "^3.0.2",
+    "jest": "^21.2.1",
     "node-sass": "^4.6.0",
+    "npm-run-all": "^4.1.2",
     "postcss-loader": "^2.0.8",
     "redux-logger": "^3.0.6",
     "resolve-url-loader": "^2.2.0",
@@ -36,6 +49,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
+    "material-ui": "^0.19.4",
     "moment": "^2.19.1",
     "react": "^16.1.0",
     "react-dom": "^16.1.0",
