@@ -2,10 +2,10 @@
   "name": "desk",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/server/index.js",
+  "main": "dist/server/app.js",
   "scripts": {
     "eslint": "eslint . --ext .jsx,.jsx",
-    "start": "nodemon ./dist/server/index.js",
+    "start": "nodemon ./dist/server/app.js",
     "build-dev": "cross-env NODE_ENV=dev webpack",
     "build-server": "tsc",
     "build-server-dev": "tsc -w",
