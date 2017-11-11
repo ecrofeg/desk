@@ -1,0 +1,19 @@
+{
+  "name": "desk",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ecrofeg/desk.git"
+  },
+  "author": "Paul Naumov <ecrofeg1@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ecrofeg/desk/issues"
+  },
+  "homepage": "https://github.com/ecrofeg/desk#readme"
+}
