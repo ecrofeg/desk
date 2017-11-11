@@ -1,13 +1,16 @@
 {
 	"compilerOptions": {
-		"outDir": "./dist/",
+		"outDir": "./dist/server/",
 		"noImplicitAny": true,
-		"module": "es6",
+		"module": "commonjs",
 		"target": "es5",
 		"jsx": "react",
 		"allowJs": true
 	},
 	"exclude": [
 		"node_modules"
+	],
+	"include": [
+		"./server/**/*"
 	]
 }

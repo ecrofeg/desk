@@ -5,7 +5,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 ReactDOM.render(
     <MuiThemeProvider>
-        <div>Hello World</div>
+        <div>Hello World!</div>
     </MuiThemeProvider>,
     document.getElementById('root')
 );

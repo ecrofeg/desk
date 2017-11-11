@@ -5,12 +5,14 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const isDevMode = process.env.NODE_ENV === 'dev';
 
 const extractSass = new ExtractTextPlugin({
-	filename: `${moduleName}.min.css`
+	filename: `${moduleName}.css`
 });
 
 const config = {
 	context: __dirname,
-	entry: './src/main.tsx',
+	entry: {
+		desk: './src/main.tsx'
+	},
 	watch: isDevMode,
 
 	watchOptions: {
@@ -19,9 +21,9 @@ const config = {
 	},
 
 	output: {
-		path: path.resolve(__dirname, 'dist'),
-		publicPath: '/dist/',
-		filename: `${moduleName}.min.js`
+		path: path.resolve(__dirname, 'dist/server/assets'),
+		publicPath: '/dist/server/assets/',
+		filename: '[name].js'
 	},
 
 	resolve: {
