@@ -8,6 +8,7 @@ import Task from '../service/models/Task';
 
 interface StateProps {
 	tasks: Task[];
+	isLoading: boolean;
 }
 
 interface DispatchProps {
@@ -21,12 +22,13 @@ class DashboardContainer extends React.Component<StateProps & DispatchProps, Rea
 	}
 
 	render() {
-		return <Dashboard tasks={this.props.tasks}/>;
+		return <Dashboard tasks={this.props.tasks} isLoading={this.props.isLoading}/>;
 	}
 }
 
 const mapStateToProps = (state: RootState): StateProps => ({
-	tasks: state.dashboard.tasks
+	tasks: state.dashboard.tasks,
+	isLoading: state.dashboard.isLoading
 });
 
 const mapActionsToProps = (dispatch: Dispatch<Action>): DispatchProps => bindActionCreators({
