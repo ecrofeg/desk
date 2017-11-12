@@ -23,6 +23,12 @@ export default class Dashboard extends React.Component {
 		tasks: []
 	};
 
+	public constructor(props: Object) {
+		super(props);
+
+		this.onRowClick = this.onRowClick.bind(this);
+	}
+
 	public componentDidMount(): void {
 		fetch('http://localhost:5555/api/task')
 			.then(response => response.json())
@@ -35,8 +41,14 @@ export default class Dashboard extends React.Component {
 			});
 	}
 
+	public onRowClick(row: number, column: number): void {
+		if (this.state.tasks[row]) {
+			window.location.href = `/task/${this.state.tasks[row].id}`;
+		}
+	}
+
 	public render(): React.ReactNode {
-		return <Table>
+		return <Table onCellClick={this.onRowClick}>
 			<TableHeader displaySelectAll={false} adjustForCheckbox={false}>
 				<TableRow>
 					<TableHeaderColumn>ID</TableHeaderColumn>

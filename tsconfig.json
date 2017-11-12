@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"outDir": "./dist/server/",
+		"experimentalDecorators": true,
 		"noImplicitAny": true,
 		"module": "commonjs",
 		"target": "es5",
