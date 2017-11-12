@@ -5,49 +5,22 @@ import {
 	TableHeader,
 	TableHeaderColumn,
 	TableRow,
-	TableRowColumn,
+	TableRowColumn
 } from 'material-ui/Table';
+import Task from '../service/models/Task';
 
-interface Task {
-	id: number;
-	name: string;
-	description: string;
-}
-
-interface State {
+interface Props {
 	tasks: Task[]
 }
 
-export default class Dashboard extends React.Component {
-	public state: State = {
-		tasks: []
+export default class Dashboard extends React.Component<Props> {
+	onRowClick = (row: number) => {
+		if (this.props.tasks[ row ]) {
+			window.location.href = `/task/${this.props.tasks[ row ].id}`;
+		}
 	};
 
-	public constructor(props: Object) {
-		super(props);
-
-		this.onRowClick = this.onRowClick.bind(this);
-	}
-
-	public componentDidMount(): void {
-		fetch('http://localhost:5555/api/task')
-			.then(response => response.json())
-			.then(response => {
-				if (response && response instanceof Array) {
-					this.setState({
-						tasks: response
-					});
-				}
-			});
-	}
-
-	public onRowClick(row: number, column: number): void {
-		if (this.state.tasks[row]) {
-			window.location.href = `/task/${this.state.tasks[row].id}`;
-		}
-	}
-
-	public render(): React.ReactNode {
+	render() {
 		return <Table onCellClick={this.onRowClick}>
 			<TableHeader displaySelectAll={false} adjustForCheckbox={false}>
 				<TableRow>
@@ -57,7 +30,7 @@ export default class Dashboard extends React.Component {
 				</TableRow>
 			</TableHeader>
 			<TableBody displayRowCheckbox={false}>
-				{this.state.tasks.map((task: Task, i: number) => <TableRow key={i}>
+				{this.props.tasks.map((task: Task, i: number) => <TableRow key={i}>
 					<TableRowColumn>{task.id}</TableRowColumn>
 					<TableRowColumn>{task.name}</TableRowColumn>
 					<TableRowColumn>{task.description}</TableRowColumn>
