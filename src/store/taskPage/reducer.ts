@@ -1,31 +1,31 @@
 import { Action, Reducer } from 'redux';
 import Task from '../../service/models/Task';
-import { ActionWithTasks, SET_TASKS, START_LOADING, STOP_LOADING } from './actions';
+import { ActionWithTask, SET_TASK, START_TASK_LOADING, STOP_TASK_LOADING } from './actions';
 
 export interface State {
-	readonly tasks: Task[];
+	readonly task: Task;
 	readonly isLoading: boolean;
 }
 
 const defaultState: State = {
-	tasks: [],
+	task: null,
 	isLoading: false
 };
 
-const setTasks: Reducer<State> = (state: State, action: ActionWithTasks) => {
-	return { ...state, tasks: action.tasks };
+const setTask: Reducer<State> = (state: State, action: ActionWithTask) => {
+	return { ...state, task: action.task };
 };
 
 export const reducer: Reducer<State> = (state: State = defaultState, action: Action): State => {
 	switch (action.type) {
-		case START_LOADING:
+		case START_TASK_LOADING:
 			return { ...state, isLoading: true };
 
-		case STOP_LOADING:
+		case STOP_TASK_LOADING:
 			return { ...state, isLoading: false };
 
-		case SET_TASKS:
-			return setTasks(state, action);
+		case SET_TASK:
+			return setTask(state, action);
 	}
 
 	return state;

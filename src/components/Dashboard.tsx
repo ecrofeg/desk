@@ -3,6 +3,7 @@ import Table, { TableBody, TableRow } from 'material-ui/Table';
 import TableCell from 'material-ui/Table/TableCell';
 import TableHead from 'material-ui/Table/TableHead';
 import { LinearProgress } from 'material-ui/Progress';
+import { Link } from 'react-router-dom';
 import Task from '../service/models/Task';
 
 interface Props {
@@ -26,9 +27,9 @@ export default class Dashboard extends React.Component<Props> {
 
 				<TableBody>
 					{this.props.tasks.map((task: Task, i: number) => <TableRow key={i}>
-						<TableCell><a href={`/task/${task.id}`}>{task.id}</a></TableCell>
-						<TableCell><a href={`/task/${task.id}`}>{task.name}</a></TableCell>
-						<TableCell><a href={`/task/${task.id}`}>{task.description}</a></TableCell>
+						<TableCell><Link to={`/task/${task.id}`}>{task.id}</Link></TableCell>
+						<TableCell><Link to={`/task/${task.id}`}>{task.name}</Link></TableCell>
+						<TableCell><Link to={`/task/${task.id}`}>{task.description}</Link></TableCell>
 					</TableRow>)}
 				</TableBody>
 			</Table>
