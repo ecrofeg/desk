@@ -17,6 +17,7 @@ interface Props {
 
 interface StateProps {
 	task?: Task;
+	isLoading: boolean;
 }
 
 interface DispatchProps {
@@ -30,12 +31,13 @@ class TaskPageContainer extends React.Component<StateProps & DispatchProps & Pro
 	}
 
 	render() {
-		return <TaskPage task={this.props.task}/>;
+		return <TaskPage task={this.props.task} isLoading={this.props.isLoading}/>;
 	}
 }
 
 const mapStateToProps = (state: RootState): StateProps => ({
-	task: state.taskPage.task
+	task: state.taskPage.task,
+	isLoading: state.taskPage.isLoading
 });
 
 const mapActionsToProps = (dispatch: Dispatch<Action>): DispatchProps => bindActionCreators({

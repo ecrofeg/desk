@@ -1,13 +1,15 @@
 import * as React from 'react';
 import Task from '../service/models/Task';
+import { LinearProgress } from 'material-ui/Progress';
 
 interface Props {
 	task?: Task;
+	isLoading: boolean;
 }
 
 export default class TaskPage extends React.Component<Props> {
 	renderNoTask = () => {
-		return <div>No task found :(</div>;
+		return this.props.isLoading ? null : <div>No task found :(</div>;
 	};
 
 	renderTask = (task: Task) => {
@@ -18,6 +20,7 @@ export default class TaskPage extends React.Component<Props> {
 
 	render() {
 		return <div>
+			{this.props.isLoading ? <LinearProgress mode="query" /> : null}
 			{this.props.task ? this.renderTask(this.props.task) : this.renderNoTask()}
 		</div>;
 	}

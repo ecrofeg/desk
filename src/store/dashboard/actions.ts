@@ -21,7 +21,7 @@ export const actionCreators = {
 			.then(response => {
 				dispatch(actionCreators.stopLoading());
 
-				if (response && response instanceof Array) {
+				if (response instanceof Array && response.length) {
 					dispatch(actionCreators.setTasks(response));
 				}
 			});

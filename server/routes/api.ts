@@ -11,7 +11,25 @@ const db = mysql.createConnection({
 
 router.get('/task', (req: express.Request, res: express.Response) => {
 	db.query('SELECT * FROM task', (error: mysql.MysqlError | null, results: any) => {
-		res.json(results);
+		let tasks = [];
+
+		if (results instanceof Array && results.length) {
+			tasks = results;
+		}
+
+		res.json(tasks);
+	});
+});
+
+router.get('/task/:id', (req: express.Request, res: express.Response) => {
+	db.query('SELECT * FROM task WHERE id=? LIMIT 1', [req.params.id], (error: mysql.MysqlError | null, results: any) => {
+		let task = null;
+
+		if (results instanceof Array && results.length) {
+			task = results.shift();
+		}
+
+		res.json(task);
 	});
 });
 
