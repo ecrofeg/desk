@@ -9673,14 +9673,15 @@ exports.actionCreators = {
     setTasks: function (tasks) { return ({ type: exports.SET_TASKS, tasks: tasks }); },
     loadTasks: function () { return function (dispatch) {
         dispatch(exports.actionCreators.startLoading());
-        fetch('http://localhost:5555/api/task')
+        fetch('http://localhost:5555/api/task?assignee_id=1')
             .then(function (response) { return response.json(); })
             .then(function (response) {
             dispatch(exports.actionCreators.stopLoading());
             if (response instanceof Array && response.length) {
                 dispatch(exports.actionCreators.setTasks(response));
             }
-        });
+        })
+            .catch(function (reason) { return dispatch(exports.actionCreators.stopLoading()); });
     }; }
 };
 
@@ -11472,7 +11473,8 @@ exports.actionCreators = {
             if (response) {
                 dispatch(exports.actionCreators.setTask(response));
             }
-        });
+        })
+            .catch(function (reason) { return dispatch(exports.actionCreators.stopLoading()); });
     }; }
 };
 
@@ -11494,7 +11496,7 @@ var DashboardContainer_1 = __webpack_require__(371);
 var TaskPageContainer_1 = __webpack_require__(431);
 var index_1 = __webpack_require__(433);
 var react_router_1 = __webpack_require__(438);
-var NotFound_1 = __webpack_require__(443);
+var NotFound_1 = __webpack_require__(439);
 ReactDOM.render(React.createElement(react_router_dom_1.BrowserRouter, null,
     React.createElement(react_redux_1.Provider, { store: index_1.getStore() },
         React.createElement(Layout_1.default, null,
@@ -48557,7 +48559,9 @@ var TaskPage = /** @class */ (function (_super) {
             return _this.props.isLoading ? null : React.createElement("div", null, "No task found :(");
         };
         _this.renderTask = function (task) {
-            return React.createElement("div", null, task.name);
+            return React.createElement("div", null,
+                React.createElement("div", null, task.name),
+                React.createElement("div", null, task.description));
         };
         return _this;
     }
@@ -48744,11 +48748,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 439 */,
-/* 440 */,
-/* 441 */,
-/* 442 */,
-/* 443 */
+/* 439 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

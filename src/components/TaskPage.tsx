@@ -14,7 +14,8 @@ export default class TaskPage extends React.Component<Props> {
 
 	renderTask = (task: Task) => {
 		return <div>
-			{task.name}
+			<div>{task.name}</div>
+			<div>{task.description}</div>
 		</div>;
 	};
 

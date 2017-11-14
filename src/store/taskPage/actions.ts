@@ -24,6 +24,7 @@ export const actionCreators = {
 				if (response) {
 					dispatch(actionCreators.setTask(response));
 				}
-			});
+			})
+			.catch(reason => dispatch(actionCreators.stopLoading()));
 	}
 };

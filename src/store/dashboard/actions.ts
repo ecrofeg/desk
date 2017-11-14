@@ -16,7 +16,7 @@ export const actionCreators = {
 	loadTasks: () => (dispatch: Dispatch<Action>): void => {
 		dispatch(actionCreators.startLoading());
 
-		fetch('http://localhost:5555/api/task')
+		fetch('http://localhost:5555/api/task?assignee_id=1')
 			.then(response => response.json())
 			.then(response => {
 				dispatch(actionCreators.stopLoading());
@@ -24,6 +24,7 @@ export const actionCreators = {
 				if (response instanceof Array && response.length) {
 					dispatch(actionCreators.setTasks(response));
 				}
-			});
+			})
+			.catch(reason => dispatch(actionCreators.stopLoading()));
 	}
 };
