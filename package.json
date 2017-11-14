@@ -2,15 +2,15 @@
   "name": "desk",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/server/app.js",
+  "main": "dist/app.js",
   "scripts": {
     "eslint": "eslint . --ext .jsx,.jsx",
-    "start": "nodemon ./dist/server/app.js",
+    "start": "nodemon ./dist/app.js",
     "build-dev": "cross-env NODE_ENV=dev webpack",
     "build-server": "tsc",
     "build-server-dev": "tsc -w",
     "dev": "run-p build-dev build-server-dev",
-    "build": "npm run eslint && cross-env NODE_ENV=production webpack && npm run build-server",
+    "build": "cross-env NODE_ENV=production webpack && npm run build-server",
     "prepublish": "npm run eslint && npm run test && npm run build",
     "test": "jest"
   },
