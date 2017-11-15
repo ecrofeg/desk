@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as moment from 'moment';
 import Table, { TableBody, TableRow } from 'material-ui/Table';
 import TableCell from 'material-ui/Table/TableCell';
 import TableHead from 'material-ui/Table/TableHead';
@@ -21,7 +22,7 @@ export default class Dashboard extends React.Component<Props> {
 					<TableRow>
 						<TableCell>ID</TableCell>
 						<TableCell>Name</TableCell>
-						<TableCell>Description</TableCell>
+						<TableCell>Date</TableCell>
 					</TableRow>
 				</TableHead>
 
@@ -29,7 +30,7 @@ export default class Dashboard extends React.Component<Props> {
 					{this.props.tasks.map((task: Task, i: number) => <TableRow key={i}>
 						<TableCell><Link to={`/task/${task.id}`}>{task.id}</Link></TableCell>
 						<TableCell><Link to={`/task/${task.id}`}>{task.name}</Link></TableCell>
-						<TableCell><Link to={`/task/${task.id}`}>{task.description}</Link></TableCell>
+						<TableCell>{moment(task.created_at).format('DD MMM YYYY')}</TableCell>
 					</TableRow>)}
 				</TableBody>
 			</Table>

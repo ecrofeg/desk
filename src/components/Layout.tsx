@@ -4,6 +4,7 @@ import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
+import Paper from 'material-ui/Paper';
 
 export default class Layout extends React.Component {
 	render() {
@@ -20,8 +21,10 @@ export default class Layout extends React.Component {
 				</Toolbar>
 			</AppBar>
 
-			<div>
-				{this.props.children}
+			<div className="desk-wrapper">
+				<Paper className="desk-content">
+					{this.props.children}
+				</Paper>
 			</div>
 		</section>;
 	}

@@ -1,6 +1,8 @@
 import * as React from 'react';
 import Task from '../service/models/Task';
-import { LinearProgress } from 'material-ui/Progress';
+import { CircularProgress } from 'material-ui/Progress';
+import Typography from 'material-ui/Typography';
+import * as classnames from 'classnames';
 
 interface Props {
 	task?: Task;
@@ -14,15 +16,18 @@ export default class TaskPage extends React.Component<Props> {
 
 	renderTask = (task: Task) => {
 		return <div>
-			<div>{task.name}</div>
-			<div>{task.description}</div>
+			<h1 className="task-name">{task.name}</h1>
+			<Typography type="body1" component="p">{task.description}</Typography>
 		</div>;
 	};
 
 	render() {
-		return <div>
-			{this.props.isLoading ? <LinearProgress mode="query" /> : null}
+		return <section className="task">
+			<div className={classnames('progress', { 'progress-hidden': !this.props.isLoading })}>
+				<CircularProgress color="accent"/>
+			</div>
+
 			{this.props.task ? this.renderTask(this.props.task) : this.renderNoTask()}
-		</div>;
+		</section>;
 	}
 }

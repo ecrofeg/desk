@@ -10,10 +10,44 @@ body, html {
 
 body {
 	font-family: 'Roboto', sans-serif;
+	background-color: #f5f5f5;
+	color: #212121;
 }
 
 .desk-root {
 	.toolbar {
 		position: static;
+	}
+}
+
+.desk-wrapper {
+	width: 1280px;
+	margin: 0 auto;
+}
+
+.desk-content {
+	position: relative;
+	margin: 20px 0 0 0;
+	padding: 20px 30px;
+}
+
+.progress {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+
+	cursor: wait;
+	background: rgba(255, 255, 255, 0.8);
+	transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+
+	&-hidden {
+		opacity: 0;
+		visibility: hidden;
 	}
 }
