@@ -3,9 +3,10 @@ import * as moment from 'moment';
 import Table, { TableBody, TableRow } from 'material-ui/Table';
 import TableCell from 'material-ui/Table/TableCell';
 import TableHead from 'material-ui/Table/TableHead';
-import { LinearProgress } from 'material-ui/Progress';
 import { Link } from 'react-router-dom';
 import Task from '../service/models/Task';
+import { CircularProgress } from 'material-ui/Progress';
+import * as classnames from 'classnames';
 
 interface Props {
 	tasks: Task[];
@@ -14,8 +15,10 @@ interface Props {
 
 export default class Dashboard extends React.Component<Props> {
 	render() {
-		return <div>
-			{this.props.isLoading ? <LinearProgress mode="query" /> : null}
+		return <section className="dashboard">
+			<div className={classnames('progress', { 'progress-hidden': !this.props.isLoading })}>
+				<CircularProgress color="accent"/>
+			</div>
 
 			<Table>
 				<TableHead>
@@ -34,6 +37,6 @@ export default class Dashboard extends React.Component<Props> {
 					</TableRow>)}
 				</TableBody>
 			</Table>
-		</div>;
+		</section>;
 	}
 }

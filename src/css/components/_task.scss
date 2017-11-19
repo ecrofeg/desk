@@ -1,7 +1,12 @@
 .task {
+	padding: 24px;
+	position: relative;
+
 	&-name {
 		font-size: 30px;
 		font-weight: 300;
 		line-height: 35px;
+
+		margin-bottom: 24px;
 	}
 }
