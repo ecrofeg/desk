@@ -1,4 +1,4 @@
-import { Action, Reducer } from 'redux';
+import { AnyAction, Reducer } from 'redux';
 import Project from '../../service/models/Project';
 import { ActionWithProjects, SET_PROJECTS, START_PROJECTS_LOADING, STOP_PROJECTS_LOADING } from './actions';
 
@@ -12,11 +12,11 @@ const defaultState: State = {
 	isLoading: false
 };
 
-const setProjects: Reducer<State> = (state: State, action: ActionWithProjects) => {
+const setProjects = (state: State, action: ActionWithProjects) => {
 	return { ...state, projects: action.projects };
 };
 
-export const reducer: Reducer<State> = (state: State = defaultState, action: Action): State => {
+export const reducer: Reducer<State> = (state: State = defaultState, action: AnyAction) => {
 	switch (action.type) {
 		case START_PROJECTS_LOADING:
 			return { ...state, isLoading: true };
@@ -25,7 +25,7 @@ export const reducer: Reducer<State> = (state: State = defaultState, action: Act
 			return { ...state, isLoading: false };
 
 		case SET_PROJECTS:
-			return setProjects(state, action);
+			return setProjects(state, <ActionWithProjects>action);
 	}
 
 	return state;
