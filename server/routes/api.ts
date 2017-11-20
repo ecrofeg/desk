@@ -17,11 +17,11 @@ redis.on('error', error => {
 
 router.get('/task', (req: express.Request, res: express.Response) => {
 	const { assignee_id } = req.query;
-	const cacheKey = `user_tasks_${assignee_id}`;
+	const cacheKey: string = `user_tasks_${assignee_id}`;
 
-	redis.get(cacheKey, (error, reply) => {
-		if (reply) {
-			res.send(reply);
+	redis.get(cacheKey, (error, cachedData) => {
+		if (cachedData) {
+			res.send(cachedData);
 		}
 		else {
 			db.query('SELECT * FROM task WHERE assignee_id=?', assignee_id, (error: mysql.MysqlError | null, results: any) => {
@@ -38,13 +38,35 @@ router.get('/task', (req: express.Request, res: express.Response) => {
 	});
 });
 
+router.get('/project', (req: express.Request, res: express.Response) => {
+	const cacheKey: string = `projects`;
+
+	redis.get(cacheKey, (error, cachedData) => {
+		if (cachedData) {
+			res.send(cachedData);
+		}
+		else {
+			db.query('SELECT * from project', (error: mysql.MysqlError | null, results: any) => {
+				let projects: Object[] = [];
+
+				if (results instanceof Array && results.length) {
+					projects = results;
+					redis.set(cacheKey, JSON.stringify(projects));
+				}
+
+				res.json(projects);
+			});
+		}
+	});
+});
+
 router.get('/task/:id', (req: express.Request, res: express.Response) => {
 	const { id: taskId } = req.params;
-	const cacheKey = `task_${taskId}`;
+	const cacheKey: string = `task_${taskId}`;
 
-	redis.get(cacheKey, (error, reply) => {
-		if (reply) {
-			res.send(reply);
+	redis.get(cacheKey, (error, cachedData) => {
+		if (cachedData) {
+			res.send(cachedData);
 		}
 		else {
 			db.query(`

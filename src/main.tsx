@@ -6,6 +6,7 @@ import { BrowserRouter, Link, Switch } from 'react-router-dom';
 import Layout from './components/Layout';
 import DashboardContainer from './containers/DashboardContainer';
 import TaskPageContainer from './containers/TaskPageContainer';
+import ProjectsPageContainer from './containers/ProjectsPageContainer';
 import { getStore } from './store/index';
 import { Route } from 'react-router';
 import NotFound from './components/NotFound';
@@ -52,7 +53,7 @@ ReactDOM.render(
 							</Link>
 						</ListItem>
 						<ListItem button className="sidebar-link__wrapper">
-							<Link className="sidebar-link" to="/projects">
+							<Link className="sidebar-link" to="/project">
 								<ListItemIcon>
 									<LibraryIcon/>
 								</ListItemIcon>
@@ -73,6 +74,7 @@ ReactDOM.render(
 					<Switch>
 						<Route exact path="/" component={DashboardContainer}/>
 						<Route path="/task/:id" component={TaskPageContainer}/>
+						<Route path="/project" component={ProjectsPageContainer}/>
 						<Route component={NotFound}/>
 					</Switch>
 				</Layout>

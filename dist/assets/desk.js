@@ -28098,6 +28098,7 @@ var react_router_dom_1 = __webpack_require__(120);
 var Layout_1 = __webpack_require__(368);
 var DashboardContainer_1 = __webpack_require__(468);
 var TaskPageContainer_1 = __webpack_require__(550);
+var ProjectsPageContainer_1 = __webpack_require__(574);
 var index_1 = __webpack_require__(552);
 var react_router_1 = __webpack_require__(557);
 var NotFound_1 = __webpack_require__(558);
@@ -28129,7 +28130,7 @@ ReactDOM.render(React.createElement(react_router_dom_1.BrowserRouter, null,
                                 React.createElement(ViewList_1.default, null)),
                             React.createElement(List_1.ListItemText, { primary: "Dashboard" }))),
                     React.createElement(List_1.ListItem, { button: true, className: "sidebar-link__wrapper" },
-                        React.createElement(react_router_dom_1.Link, { className: "sidebar-link", to: "/projects" },
+                        React.createElement(react_router_dom_1.Link, { className: "sidebar-link", to: "/project" },
                             React.createElement(List_1.ListItemIcon, null,
                                 React.createElement(LibraryBooks_1.default, null)),
                             React.createElement(List_1.ListItemText, { primary: "Projects" }))),
@@ -28142,6 +28143,7 @@ ReactDOM.render(React.createElement(react_router_dom_1.BrowserRouter, null,
                 React.createElement(react_router_dom_1.Switch, null,
                     React.createElement(react_router_1.Route, { exact: true, path: "/", component: DashboardContainer_1.default }),
                     React.createElement(react_router_1.Route, { path: "/task/:id", component: TaskPageContainer_1.default }),
+                    React.createElement(react_router_1.Route, { path: "/project", component: ProjectsPageContainer_1.default }),
                     React.createElement(react_router_1.Route, { component: NotFound_1.default })))))), window.document.getElementById('root'));
 
 
@@ -64769,8 +64771,10 @@ var redux_thunk_1 = __webpack_require__(553);
 var redux_logger_1 = __webpack_require__(554);
 var reducer_1 = __webpack_require__(555);
 var reducer_2 = __webpack_require__(556);
+var reducer_3 = __webpack_require__(575);
 exports.getStore = function () { return redux_1.createStore(redux_1.combineReducers({
     dashboard: reducer_1.reducer,
+    projectsPage: reducer_3.reducer,
     taskPage: reducer_2.reducer
 }), redux_1.applyMiddleware(redux_thunk_1.default, redux_logger_1.default)); };
 
@@ -65983,6 +65987,169 @@ FolderSpecial.muiName = 'SvgIcon';
 
 exports.default = FolderSpecial;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
+
+/***/ }),
+/* 573 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.START_PROJECTS_LOADING = 'START_PROJECTS_LOADING';
+exports.STOP_PROJECTS_LOADING = 'STOP_PROJECTS_LOADING';
+exports.SET_PROJECTS = 'SET_PROJECTS';
+exports.actionCreators = {
+    startLoading: function () { return ({ type: exports.START_PROJECTS_LOADING }); },
+    stopLoading: function () { return ({ type: exports.STOP_PROJECTS_LOADING }); },
+    setProjects: function (projects) { return ({ type: exports.SET_PROJECTS, projects: projects }); },
+    loadProjects: function (taskId) { return function (dispatch) {
+        dispatch(exports.actionCreators.startLoading());
+        fetch("http://localhost:5555/api/project")
+            .then(function (response) { return response.json(); })
+            .then(function (response) {
+            dispatch(exports.actionCreators.stopLoading());
+            if (response) {
+                dispatch(exports.actionCreators.setProjects(response));
+            }
+        })
+            .catch(function (reason) { return dispatch(exports.actionCreators.stopLoading()); });
+    }; }
+};
+
+
+/***/ }),
+/* 574 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var react_redux_1 = __webpack_require__(70);
+var redux_1 = __webpack_require__(48);
+var actions_1 = __webpack_require__(573);
+var ProjectsPage_1 = __webpack_require__(576);
+var ProjectsPageContainer = /** @class */ (function (_super) {
+    __extends(ProjectsPageContainer, _super);
+    function ProjectsPageContainer() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ProjectsPageContainer.prototype.componentDidMount = function () {
+        this.props.loadProjects();
+    };
+    ProjectsPageContainer.prototype.render = function () {
+        return React.createElement(ProjectsPage_1.default, { projects: this.props.projects, isLoading: this.props.isLoading });
+    };
+    return ProjectsPageContainer;
+}(React.Component));
+var mapStateToProps = function (state) { return ({
+    projects: state.projectsPage.projects,
+    isLoading: state.projectsPage.isLoading
+}); };
+var mapActionsToProps = function (dispatch) { return redux_1.bindActionCreators({
+    loadProjects: actions_1.actionCreators.loadProjects
+}, dispatch); };
+exports.default = react_redux_1.connect(mapStateToProps, mapActionsToProps)(ProjectsPageContainer);
+
+
+/***/ }),
+/* 575 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var actions_1 = __webpack_require__(573);
+var defaultState = {
+    projects: [],
+    isLoading: false
+};
+var setProjects = function (state, action) {
+    return __assign({}, state, { projects: action.projects });
+};
+exports.reducer = function (state, action) {
+    if (state === void 0) { state = defaultState; }
+    switch (action.type) {
+        case actions_1.START_PROJECTS_LOADING:
+            return __assign({}, state, { isLoading: true });
+        case actions_1.STOP_PROJECTS_LOADING:
+            return __assign({}, state, { isLoading: false });
+        case actions_1.SET_PROJECTS:
+            return setProjects(state, action);
+    }
+    return state;
+};
+
+
+/***/ }),
+/* 576 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(1);
+var moment = __webpack_require__(2);
+var Table_1 = __webpack_require__(471);
+var TableCell_1 = __webpack_require__(102);
+var TableHead_1 = __webpack_require__(293);
+var react_router_dom_1 = __webpack_require__(120);
+var Progress_1 = __webpack_require__(308);
+var classnames = __webpack_require__(5);
+var ProjectsPage = /** @class */ (function (_super) {
+    __extends(ProjectsPage, _super);
+    function ProjectsPage() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ProjectsPage.prototype.render = function () {
+        return React.createElement("section", { className: "projects" },
+            React.createElement("div", { className: classnames('progress', { 'progress-hidden': !this.props.isLoading }) },
+                React.createElement(Progress_1.CircularProgress, { color: "accent" })),
+            React.createElement(Table_1.default, null,
+                React.createElement(TableHead_1.default, null,
+                    React.createElement(Table_1.TableRow, null,
+                        React.createElement(TableCell_1.default, null, "ID"),
+                        React.createElement(TableCell_1.default, null, "Title"),
+                        React.createElement(TableCell_1.default, null, "Created"))),
+                React.createElement(Table_1.TableBody, null, this.props.projects.map(function (project, i) { return React.createElement(Table_1.TableRow, { key: i },
+                    React.createElement(TableCell_1.default, null,
+                        React.createElement(react_router_dom_1.Link, { className: "dashboard-link", to: "/project/" + project.id }, project.id)),
+                    React.createElement(TableCell_1.default, null,
+                        React.createElement(react_router_dom_1.Link, { className: "dashboard-link", to: "/project/" + project.id }, project.name)),
+                    React.createElement(TableCell_1.default, null, moment(project.created_at).format('DD MMM YYYY'))); }))));
+    };
+    return ProjectsPage;
+}(React.Component));
+exports.default = ProjectsPage;
+
 
 /***/ })
 /******/ ]);
