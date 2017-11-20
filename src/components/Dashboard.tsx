@@ -24,15 +24,15 @@ export default class Dashboard extends React.Component<Props> {
 				<TableHead>
 					<TableRow>
 						<TableCell>ID</TableCell>
-						<TableCell>Name</TableCell>
-						<TableCell>Date</TableCell>
+						<TableCell>Title</TableCell>
+						<TableCell>Created</TableCell>
 					</TableRow>
 				</TableHead>
 
 				<TableBody>
 					{this.props.tasks.map((task: Task, i: number) => <TableRow key={i}>
-						<TableCell><Link to={`/task/${task.id}`}>{task.id}</Link></TableCell>
-						<TableCell><Link to={`/task/${task.id}`}>{task.name}</Link></TableCell>
+						<TableCell><Link className="dashboard-link" to={`/task/${task.id}`}>{task.id}</Link></TableCell>
+						<TableCell><Link className="dashboard-link" to={`/task/${task.id}`}>{task.name}</Link></TableCell>
 						<TableCell>{moment(task.created_at).format('DD MMM YYYY')}</TableCell>
 					</TableRow>)}
 				</TableBody>

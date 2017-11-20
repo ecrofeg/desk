@@ -1,3 +1,9 @@
 .dashboard {
 	position: relative;
+
+	&-link {
+		&, &:visited {
+			color: #2196f3;
+		}
+	}
 }

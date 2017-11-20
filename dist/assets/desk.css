@@ -128,3 +128,8 @@ a:visited {
 .dashboard {
   position: relative;
 }
+
+.dashboard-link,
+.dashboard-link:visited {
+  color: #2196f3;
+}

@@ -14,6 +14,8 @@ import Divider from 'material-ui/Divider';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import PlusIcon from 'material-ui-icons/AddCircle';
 import ViewListIcon from 'material-ui-icons/ViewList';
+import LibraryIcon from 'material-ui-icons/LibraryBooks';
+import FolderSpecialIcon from 'material-ui-icons/FolderSpecial';
 import Typography from 'material-ui/Typography';
 
 ReactDOM.render(
@@ -46,7 +48,23 @@ ReactDOM.render(
 								<ListItemIcon>
 									<ViewListIcon/>
 								</ListItemIcon>
-								<ListItemText primary="My Tasks"/>
+								<ListItemText primary="Dashboard"/>
+							</Link>
+						</ListItem>
+						<ListItem button className="sidebar-link__wrapper">
+							<Link className="sidebar-link" to="/projects">
+								<ListItemIcon>
+									<LibraryIcon/>
+								</ListItemIcon>
+								<ListItemText primary="Projects"/>
+							</Link>
+						</ListItem>
+						<ListItem button className="sidebar-link__wrapper">
+							<Link className="sidebar-link" to="/">
+								<ListItemIcon>
+									<FolderSpecialIcon/>
+								</ListItemIcon>
+								<ListItemText primary="Favorites"/>
 							</Link>
 						</ListItem>
 					</List>
