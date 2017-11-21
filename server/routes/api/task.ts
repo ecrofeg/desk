@@ -1,21 +1,11 @@
 import * as express from 'express';
 import * as mysql from 'mysql';
-import * as Redis from 'redis';
+import db from '../../core/db';
+import redis from '../../core/redis';
 
-const redis = Redis.createClient(6379);
 const router = express.Router();
-const db = mysql.createConnection({
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	password: process.env.DB_PASSWORD,
-	database: process.env.DB_NAME
-});
 
-redis.on('error', error => {
-	console.log(error);
-});
-
-router.get('/task', (req: express.Request, res: express.Response) => {
+router.get('/', (req: express.Request, res: express.Response) => {
 	const { assignee_id } = req.query;
 	const cacheKey: string = `user_tasks_${assignee_id}`;
 
@@ -38,29 +28,7 @@ router.get('/task', (req: express.Request, res: express.Response) => {
 	});
 });
 
-router.get('/project', (req: express.Request, res: express.Response) => {
-	const cacheKey: string = `projects`;
-
-	redis.get(cacheKey, (error, cachedData) => {
-		if (cachedData) {
-			res.send(cachedData);
-		}
-		else {
-			db.query('SELECT * from project', (error: mysql.MysqlError | null, results: any) => {
-				let projects: Object[] = [];
-
-				if (results instanceof Array && results.length) {
-					projects = results;
-					redis.set(cacheKey, JSON.stringify(projects));
-				}
-
-				res.json(projects);
-			});
-		}
-	});
-});
-
-router.get('/task/:id', (req: express.Request, res: express.Response) => {
+router.get('/:id', (req: express.Request, res: express.Response) => {
 	const { id: taskId } = req.params;
 	const cacheKey: string = `task_${taskId}`;
 
