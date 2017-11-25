@@ -12,13 +12,17 @@ router.get('/', function (req, res) {
             res.send(cachedData);
         }
         else {
-            db_1.default.query('SELECT * FROM task WHERE assignee_id=?', assignee_id, function (error, results) {
-                var tasks = [];
+            db_1.default.query("SELECT * FROM task WHERE assignee_id=?", assignee_id, function (error, results) {
+                var response = {
+                    tasks: {}
+                };
                 if (results instanceof Array && results.length) {
-                    tasks = results;
-                    redis_1.default.set(cacheKey, JSON.stringify(tasks));
+                    results.forEach(function (task) {
+                        response.tasks[task.id] = task;
+                    });
+                    redis_1.default.set(cacheKey, JSON.stringify(response));
                 }
-                res.json(tasks);
+                res.json(response);
             });
         }
     });
@@ -31,13 +35,47 @@ router.get('/:id', function (req, res) {
             res.send(cachedData);
         }
         else {
-            db_1.default.query("\n\t\t\t\tSELECT \n\t\t\t\t\ttask.name, task.description, task.created_at, task.updated_at,\n\t\t\t\t\tuser.name as author_name,\n\t\t\t\t\tfile.path as author_picture,\n\t\t\t\t\tstatus.name as task_status,\n\t\t\t\t\tproject.name as task_project,\n\t\t\t\t\tpriority.name as task_priority\n\t\t\t\tFROM task \n\t\t\t\t\tLEFT JOIN user\n\t\t\t\t\t\tON task.author_id = user.id\n\t\t\t\t\tLEFT JOIN file\n\t\t\t\t\t\tON user.picture_id = file.id\n\t\t\t\t\tLEFT JOIN status\n\t\t\t\t\t\tON task.status_id = status.id\n\t\t\t\t\tLEFT JOIN project\n\t\t\t\t\t\tON task.project_id = project.id\n\t\t\t\t\tLEFT JOIN priority\n\t\t\t\t\t\tON task.priority_id = priority.id\n\t\t\t\tWHERE task.id=? \n\t\t\t\tLIMIT 1", taskId, function (error, results) {
-                var task = null;
+            db_1.default.query("\n\t\t\t\tSELECT \n\t\t\t\t\ttask.*,\n\t\t\t\t\tassignee.name as assignee_name,\n\t\t\t\t\tauthor.name as author_name,\n\t\t\t\t\tstatus.name as status_name,\n\t\t\t\t\tproject.name as project_name,\n\t\t\t\t\tproject.author_id as project_author_id,\n\t\t\t\t\tproject.description as project_description,\n\t\t\t\t\tproject.author_id as project_author_id,\n\t\t\t\t\tproject.created_at as project_created_at,\n\t\t\t\t\tproject.updated_at as project_updated_at,\n\t\t\t\t\tpriority.value as priority_value\n\t\t\t\tFROM task \n\t\t\t\t\tLEFT JOIN user as assignee\n\t\t\t\t\t\tON task.assignee_id = assignee.id\n\t\t\t\t\tLEFT JOIN user as author\n\t\t\t\t\t\tON task.author_id = author.id\n\t\t\t\t\tLEFT JOIN status\n\t\t\t\t\t\tON task.status_id = status.id\n\t\t\t\t\tLEFT JOIN project\n\t\t\t\t\t\tON task.project_id = project.id\n\t\t\t\t\tLEFT JOIN priority\n\t\t\t\t\t\tON task.priority_id = priority.id\n\t\t\t\tWHERE task.id=? \n\t\t\t\tLIMIT 1", taskId, function (error, results) {
+                var response = {
+                    tasks: {},
+                    users: {},
+                    projects: {}
+                };
                 if (results instanceof Array && results.length) {
-                    task = results.shift();
-                    redis_1.default.set(cacheKey, JSON.stringify(task));
+                    var task = results.shift();
+                    response.tasks[task.id] = {
+                        id: task.id,
+                        name: task.name,
+                        description: task.description,
+                        author_id: task.author_id,
+                        assignee_id: task.assignee_id,
+                        status_id: task.status_id,
+                        project_id: task.project_id,
+                        priority_id: task.priority_id,
+                        created_at: task.created_at,
+                        updated_at: task.updated_at,
+                        status_name: task.status_name,
+                        priority_value: task.priority_value
+                    };
+                    response.users[task.author_id] = {
+                        id: task.author_id,
+                        name: task.author_name
+                    };
+                    response.users[task.assignee_id] = {
+                        id: task.assignee_id,
+                        name: task.author_name
+                    };
+                    response.projects[task.project_id] = {
+                        id: task.project_id,
+                        name: task.project_name,
+                        description: task.project_description,
+                        author_id: task.project_author_id,
+                        created_at: task.project_created_at,
+                        updated_at: task.project_updated_at
+                    };
+                    redis_1.default.set(cacheKey, JSON.stringify(response));
                 }
-                res.json(task);
+                res.json(response);
             });
         }
     });

@@ -14833,8 +14833,14 @@ exports.actionCreators = {
             .then(function (response) { return response.json(); })
             .then(function (response) {
             dispatch(exports.actionCreators.stopLoading());
-            if (response instanceof Array && response.length) {
-                dispatch(exports.actionCreators.setTasks(response));
+            if (response && response.tasks) {
+                var tasks = [];
+                for (var taskId in response.tasks) {
+                    if (response.tasks.hasOwnProperty(taskId)) {
+                        tasks.push(response.tasks[taskId]);
+                    }
+                }
+                dispatch(exports.actionCreators.setTasks(tasks));
             }
         })
             .catch(function (reason) { return dispatch(exports.actionCreators.stopLoading()); });
@@ -28159,7 +28165,8 @@ exports.actionCreators = {
             .then(function (response) { return response.json(); })
             .then(function (response) {
             dispatch(exports.actionCreators.stopLoading());
-            if (response) {
+            if (response && response.tasks && response.tasks.hasOwnProperty(taskId)) {
+                var task = response.tasks.hasOwnProperty(taskId);
                 dispatch(exports.actionCreators.setTask(response));
             }
         })

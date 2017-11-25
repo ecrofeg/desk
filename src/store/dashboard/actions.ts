@@ -21,8 +21,16 @@ export const actionCreators = {
 			.then(response => {
 				dispatch(actionCreators.stopLoading());
 
-				if (response instanceof Array && response.length) {
-					dispatch(actionCreators.setTasks(response));
+				if (response && response.tasks) {
+					const tasks: Task[] = [];
+
+					for (const taskId in response.tasks) {
+						if (response.tasks.hasOwnProperty(taskId)) {
+							tasks.push(response.tasks[taskId]);
+						}
+					}
+
+					dispatch(actionCreators.setTasks(tasks));
 				}
 			})
 			.catch(reason => dispatch(actionCreators.stopLoading()));

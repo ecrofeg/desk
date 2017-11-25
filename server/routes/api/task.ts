@@ -2,8 +2,20 @@ import * as express from 'express';
 import * as mysql from 'mysql';
 import db from '../../core/db';
 import redis from '../../core/redis';
+import Task from '../../schemas/Task';
+import Project from '../../schemas/Project';
 
 const router = express.Router();
+
+interface TasksSchemas {
+	tasks: {
+		[taskId: number]: Task
+	};
+	projects?: {
+		[projectId: number]: Project;
+	};
+	users?: any;
+}
 
 router.get('/', (req: express.Request, res: express.Response) => {
 	const { assignee_id } = req.query;
@@ -14,16 +26,23 @@ router.get('/', (req: express.Request, res: express.Response) => {
 			res.send(cachedData);
 		}
 		else {
-			db.query('SELECT * FROM task WHERE assignee_id=?', assignee_id, (error: mysql.MysqlError | null, results: any) => {
-				let tasks: Object[] = [];
+			db.query(`SELECT * FROM task WHERE assignee_id=?`, assignee_id,
+				(error: mysql.MysqlError | null, results: any) => {
+					const response: TasksSchemas = {
+						tasks: {}
+					};
 
-				if (results instanceof Array && results.length) {
-					tasks = results;
-					redis.set(cacheKey, JSON.stringify(tasks));
+					if (results instanceof Array && results.length) {
+						results.forEach((task) => {
+							response.tasks[task.id] = <Task>task;
+						});
+
+						redis.set(cacheKey, JSON.stringify(response));
+					}
+
+					res.json(response);
 				}
-
-				res.json(tasks);
-			});
+			);
 		}
 	});
 });
@@ -39,17 +58,22 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 		else {
 			db.query(`
 				SELECT 
-					task.name, task.description, task.created_at, task.updated_at,
-					user.name as author_name,
-					file.path as author_picture,
-					status.name as task_status,
-					project.name as task_project,
-					priority.name as task_priority
+					task.*,
+					assignee.name as assignee_name,
+					author.name as author_name,
+					status.name as status_name,
+					project.name as project_name,
+					project.author_id as project_author_id,
+					project.description as project_description,
+					project.author_id as project_author_id,
+					project.created_at as project_created_at,
+					project.updated_at as project_updated_at,
+					priority.value as priority_value
 				FROM task 
-					LEFT JOIN user
-						ON task.author_id = user.id
-					LEFT JOIN file
-						ON user.picture_id = file.id
+					LEFT JOIN user as assignee
+						ON task.assignee_id = assignee.id
+					LEFT JOIN user as author
+						ON task.author_id = author.id
 					LEFT JOIN status
 						ON task.status_id = status.id
 					LEFT JOIN project
@@ -60,14 +84,62 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 				LIMIT 1`,
 				taskId,
 				(error: mysql.MysqlError | null, results: any) => {
-					let task: any = null;
+					const response: TasksSchemas = {
+						tasks: {},
+						users: {},
+						projects: {}
+					};
 
 					if (results instanceof Array && results.length) {
-						task = results.shift();
-						redis.set(cacheKey, JSON.stringify(task));
+						interface TaskFromDB extends Task {
+							author_name: string;
+							project_name: string;
+							project_description: string;
+							project_author_id: number;
+							project_created_at: string;
+							project_updated_at: string;
+						}
+
+						const task: TaskFromDB = results.shift();
+
+						response.tasks[task.id] = {
+							id: task.id,
+							name: task.name,
+							description: task.description,
+							author_id: task.author_id,
+							assignee_id: task.assignee_id,
+							status_id: task.status_id,
+							project_id: task.project_id,
+							priority_id: task.priority_id,
+							created_at: task.created_at,
+							updated_at: task.updated_at,
+							status_name: task.status_name,
+							priority_value: task.priority_value
+						};
+
+						response.users[task.author_id] = {
+							id: task.author_id,
+							name: task.author_name
+						};
+
+						response.users[task.assignee_id] = {
+							id: task.assignee_id,
+							name: task.author_name
+						};
+
+						response.projects[task.project_id] = {
+							id: task.project_id,
+							name: task.project_name,
+							description: task.project_description,
+							author_id: task.project_author_id,
+							created_at: task.project_created_at,
+							updated_at: task.project_updated_at
+						};
+
+						redis.set(cacheKey, JSON.stringify(response));
 					}
 
-					res.json(task);
+					res.json(response);
 				}
 			);
 		}

@@ -21,7 +21,9 @@ export const actionCreators = {
 			.then(response => {
 				dispatch(actionCreators.stopLoading());
 
-				if (response) {
+				if (response && response.tasks && response.tasks.hasOwnProperty(taskId)) {
+					const task: Task = response.tasks.hasOwnProperty(taskId);
+
 					dispatch(actionCreators.setTask(response));
 				}
 			})
