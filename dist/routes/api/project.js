@@ -11,7 +11,8 @@ router.get('/', function (req, res) {
             res.send(cachedData);
         }
         else {
-            db_1.default.query('SELECT * from project', function (error, results) {
+            var db = db_1.getBuilder();
+            db.connection.query('SELECT * from project', function (error, results) {
                 var projects = [];
                 if (results instanceof Array && results.length) {
                     projects = results;
@@ -30,7 +31,8 @@ router.get('/:id', function (req, res) {
             res.send(cachedData);
         }
         else {
-            db_1.default.query("\n\t\t\t\tSELECT project.name, project.description, project.created_at, project.updated_at\n\t\t\t\tFROM project\n\t\t\t\tWHERE project.id=? \n\t\t\t\tLIMIT 1", projectId, function (error, results) {
+            var db = db_1.getBuilder();
+            db.connection.query("\n\t\t\t\tSELECT project.name, project.description, project.created_at, project.updated_at\n\t\t\t\tFROM project\n\t\t\t\tWHERE project.id=?\n\t\t\t\tLIMIT 1", projectId, function (error, results) {
                 var project = null;
                 if (results instanceof Array && results.length) {
                     project = results.shift();
