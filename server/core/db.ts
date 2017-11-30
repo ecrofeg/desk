@@ -8,6 +8,10 @@ const db = mysql.createConnection({
 	database: process.env.DB_NAME
 });
 
+interface WhereClause {
+	[colName:string]: any;
+}
+
 class QueryBuilder {
 	private _query: string[] = [];
 
@@ -16,7 +20,7 @@ class QueryBuilder {
 	}
 
 	select(columns: string[], from?: string): QueryBuilder {
-		this._query.push(`SELECT ${columns.map(colName => this.connection.escape(colName)).join(', ')}`);
+		this._query.push(`SELECT ${columns.join(', ')}`);
 
 		if (from) {
 			this.from(from);
@@ -25,8 +29,16 @@ class QueryBuilder {
 		return this;
 	}
 
-	from(table: string) {
-		this._query.push(`FROM ${this.connection.escape(table)}`);
+	from(table: string): QueryBuilder {
+		this._query.push(`FROM ${table}`);
+		return this;
+	}
+
+	where(conditions: WhereClause): QueryBuilder {
+		for (const colName in conditions) {
+			this._query.push(`WHERE ${colName}=${this.connection.escape(conditions[colName])}`);
+		}
+
 		return this;
 	}
 
@@ -35,9 +47,15 @@ class QueryBuilder {
 	}
 }
 
-// const builder = new QueryBuilder(db);
-// builder.select(['id', 'name'], 'project');
+const builder = new QueryBuilder(db);
+builder.select(['id', 'name'], 'project').where({
+	name: 'Desk Project'
+});
 
-export const getBuilder = (connection?: Connection = db): QueryBuilder => {
+db.query(builder.buildQuery(), (error, results) => {
+	console.log(results);
+});
+
+export const getBuilder = (connection: Connection = db): QueryBuilder => {
 	return new QueryBuilder(connection);
 };

@@ -14,15 +14,20 @@ var QueryBuilder = /** @class */ (function () {
         this.connection = connection;
     }
     QueryBuilder.prototype.select = function (columns, from) {
-        var _this = this;
-        this._query.push("SELECT " + columns.map(function (colName) { return _this.connection.escape(colName); }).join(', '));
+        this._query.push("SELECT " + columns.join(', '));
         if (from) {
             this.from(from);
         }
         return this;
     };
     QueryBuilder.prototype.from = function (table) {
-        this._query.push("FROM " + this.connection.escape(table));
+        this._query.push("FROM " + table);
+        return this;
+    };
+    QueryBuilder.prototype.where = function (conditions) {
+        for (var colName in conditions) {
+            this._query.push("WHERE " + colName + "=" + this.connection.escape(conditions[colName]));
+        }
         return this;
     };
     QueryBuilder.prototype.buildQuery = function () {
@@ -30,8 +35,13 @@ var QueryBuilder = /** @class */ (function () {
     };
     return QueryBuilder;
 }());
-// const builder = new QueryBuilder(db);
-// builder.select(['id', 'name'], 'project');
+var builder = new QueryBuilder(db);
+builder.select(['id', 'name'], 'project').where({
+    name: 'Desk Project'
+});
+db.query(builder.buildQuery(), function (error, results) {
+    console.log(results);
+});
 exports.getBuilder = function (connection) {
     if (connection === void 0) { connection = db; }
     return new QueryBuilder(connection);
