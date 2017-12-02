@@ -11,8 +11,7 @@ router.get('/', function (req, res) {
             res.send(cachedData);
         }
         else {
-            var db = db_1.getBuilder();
-            db.connection.query('SELECT * from project', function (error, results) {
+            db_1.getBuilder().select(['*']).from('project').execute().then(function (results) {
                 var projects = [];
                 if (results instanceof Array && results.length) {
                     projects = results;
@@ -31,8 +30,13 @@ router.get('/:id', function (req, res) {
             res.send(cachedData);
         }
         else {
-            var db = db_1.getBuilder();
-            db.connection.query("\n\t\t\t\tSELECT project.name, project.description, project.created_at, project.updated_at\n\t\t\t\tFROM project\n\t\t\t\tWHERE project.id=?\n\t\t\t\tLIMIT 1", projectId, function (error, results) {
+            db_1.getBuilder()
+                .select(['name', 'description', 'created_at', 'updated_at'])
+                .from('project')
+                .where({ id: 1 })
+                .limit(1)
+                .execute()
+                .then(function (results) {
                 var project = null;
                 if (results instanceof Array && results.length) {
                     project = results.shift();

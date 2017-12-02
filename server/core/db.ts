@@ -42,15 +42,42 @@ class QueryBuilder {
 		return this;
 	}
 
-	buildQuery() {
+	limit(value: number): QueryBuilder {
+		this._query.push(`LIMIT ${value}`);
+		return this;
+	}
+
+	join() {
+
+	}
+
+	add(query: string): QueryBuilder {
+		this._query.push(query);
+		return this;
+	}
+
+	buildQuery(): string {
 		return this._query.join(' ');
+	}
+
+	execute(): Promise {
+		return new Promise((resolve: Function, reject: Function) => {
+			this.connection.query(this.buildQuery(), (error: mysql.MysqlError | null, results: any) => {
+				if (error) {
+					reject(error);
+				}
+				else {
+					resolve(results);
+				}
+			});
+		});
 	}
 }
 
 const builder = new QueryBuilder(db);
 builder.select(['id', 'name'], 'project').where({
 	name: 'Desk Project'
-});
+}).limit(1);
 
 db.query(builder.buildQuery(), (error, results) => {
 	console.log(results);
@@ -59,3 +86,5 @@ db.query(builder.buildQuery(), (error, results) => {
 export const getBuilder = (connection: Connection = db): QueryBuilder => {
 	return new QueryBuilder(connection);
 };
+
+export default db;
