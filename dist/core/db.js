@@ -50,8 +50,11 @@ var QueryBuilder = /** @class */ (function () {
                 if (error) {
                     reject(error);
                 }
-                else {
+                else if (results instanceof Array) {
                     resolve(results);
+                }
+                else {
+                    reject();
                 }
             });
         });

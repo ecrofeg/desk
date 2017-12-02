@@ -60,14 +60,17 @@ class QueryBuilder {
 		return this._query.join(' ');
 	}
 
-	execute(): Promise {
-		return new Promise((resolve: Function, reject: Function) => {
+	execute(): Promise<Array<Object>> {
+		return new Promise<Array<Object>>((resolve: Function, reject: Function) => {
 			this.connection.query(this.buildQuery(), (error: mysql.MysqlError | null, results: any) => {
 				if (error) {
 					reject(error);
 				}
-				else {
+				else if (results instanceof Array) {
 					resolve(results);
+				}
+				else {
+					reject();
 				}
 			});
 		});

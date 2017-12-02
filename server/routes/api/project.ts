@@ -12,7 +12,7 @@ router.get('/', (req: express.Request, res: express.Response) => {
 			res.send(cachedData);
 		}
 		else {
-			getBuilder().select(['*']).from('project').execute().then(results => {
+			getBuilder().select(['*']).from('project').execute().then((results: any) => {
 				let projects: Object[] = [];
 
 				if (results instanceof Array && results.length) {
@@ -41,7 +41,7 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 				.where({ id: 1 })
 				.limit(1)
 				.execute()
-				.then(results => {
+				.then((results: any) => {
 					let project: any = null;
 
 					if (results instanceof Array && results.length) {
