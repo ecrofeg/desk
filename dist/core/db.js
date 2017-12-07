@@ -20,8 +20,12 @@ var QueryBuilder = /** @class */ (function () {
         }
         return this;
     };
-    QueryBuilder.prototype.from = function (table) {
-        this._query.push("FROM " + table);
+    QueryBuilder.prototype.from = function (table, as) {
+        var query = "FROM " + table;
+        if (as) {
+            query += "as " + as;
+        }
+        this._query.push(query);
         return this;
     };
     QueryBuilder.prototype.where = function (conditions) {
@@ -34,10 +38,9 @@ var QueryBuilder = /** @class */ (function () {
         this._query.push("LIMIT " + value);
         return this;
     };
-    QueryBuilder.prototype.join = function () {
-    };
-    QueryBuilder.prototype.add = function (query) {
-        this._query.push(query);
+    QueryBuilder.prototype.join = function (table, from, to, type) {
+        if (type === void 0) { type = 'LEFT'; }
+        this._query.push(type + " JOIN " + table + " ON " + from + " = " + to);
         return this;
     };
     QueryBuilder.prototype.buildQuery = function () {
@@ -45,7 +48,7 @@ var QueryBuilder = /** @class */ (function () {
     };
     QueryBuilder.prototype.execute = function () {
         var _this = this;
-        return new Promise(function (resolve, reject) {
+        var promise = new Promise(function (resolve, reject) {
             _this.connection.query(_this.buildQuery(), function (error, results) {
                 if (error) {
                     reject(error);
@@ -58,16 +61,14 @@ var QueryBuilder = /** @class */ (function () {
                 }
             });
         });
+        this.clear();
+        return promise;
+    };
+    QueryBuilder.prototype.clear = function () {
+        this._query = [];
     };
     return QueryBuilder;
 }());
-var builder = new QueryBuilder(db);
-builder.select(['id', 'name'], 'project').where({
-    name: 'Desk Project'
-}).limit(1);
-db.query(builder.buildQuery(), function (error, results) {
-    console.log(results);
-});
 exports.getBuilder = function (connection) {
     if (connection === void 0) { connection = db; }
     return new QueryBuilder(connection);

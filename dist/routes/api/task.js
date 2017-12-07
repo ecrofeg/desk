@@ -12,7 +12,14 @@ router.get('/', function (req, res) {
             res.send(cachedData);
         }
         else {
-            db_1.default.query("SELECT * FROM task WHERE assignee_id=?", assignee_id, function (error, results) {
+            db_1.getBuilder()
+                .select(['*'])
+                .from('task')
+                .where({
+                'assignee_id': assignee_id
+            })
+                .execute()
+                .then(function (results) {
                 var response = {
                     tasks: {}
                 };
@@ -35,7 +42,32 @@ router.get('/:id', function (req, res) {
             res.send(cachedData);
         }
         else {
-            db_1.default.query("\n\t\t\t\tSELECT \n\t\t\t\t\ttask.*,\n\t\t\t\t\tassignee.name as assignee_name,\n\t\t\t\t\tauthor.name as author_name,\n\t\t\t\t\tstatus.name as status_name,\n\t\t\t\t\tproject.name as project_name,\n\t\t\t\t\tproject.author_id as project_author_id,\n\t\t\t\t\tproject.description as project_description,\n\t\t\t\t\tproject.author_id as project_author_id,\n\t\t\t\t\tproject.created_at as project_created_at,\n\t\t\t\t\tproject.updated_at as project_updated_at,\n\t\t\t\t\tpriority.value as priority_value\n\t\t\t\tFROM task \n\t\t\t\t\tLEFT JOIN user as assignee\n\t\t\t\t\t\tON task.assignee_id = assignee.id\n\t\t\t\t\tLEFT JOIN user as author\n\t\t\t\t\t\tON task.author_id = author.id\n\t\t\t\t\tLEFT JOIN status\n\t\t\t\t\t\tON task.status_id = status.id\n\t\t\t\t\tLEFT JOIN project\n\t\t\t\t\t\tON task.project_id = project.id\n\t\t\t\t\tLEFT JOIN priority\n\t\t\t\t\t\tON task.priority_id = priority.id\n\t\t\t\tWHERE task.id=? \n\t\t\t\tLIMIT 1", taskId, function (error, results) {
+            db_1.getBuilder()
+                .select([
+                'task.*',
+                'assignee.name as assignee_name',
+                'author.name as author_name',
+                'status.name as status_name',
+                'project.name as project_name',
+                'project.author_id as project_author_id',
+                'project.description as project_description',
+                'project.author_id as project_author_id',
+                'project.created_at as project_created_at',
+                'project.updated_at as project_updated_at',
+                'priority.value as priority_value',
+            ])
+                .from('task')
+                .join('user as assignee', 'task.assignee_id', 'assignee.id')
+                .join('user as author', 'task.author_id', 'author.id')
+                .join('status', 'task.status_id', 'status.id')
+                .join('project', 'task.project_id', 'project.id')
+                .join('priority', 'task.priority_id', 'priority.id')
+                .where({
+                'task.id': taskId
+            })
+                .limit(1)
+                .execute()
+                .then(function (results) {
                 var response = {
                     tasks: {},
                     users: {},

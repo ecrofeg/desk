@@ -1,6 +1,5 @@
 import * as express from 'express';
-import * as mysql from 'mysql';
-import db from '../../core/db';
+import { getBuilder } from '../../core/db';
 import redis from '../../core/redis';
 import Task from '../../schemas/Task';
 import Project from '../../schemas/Project';
@@ -26,8 +25,14 @@ router.get('/', (req: express.Request, res: express.Response) => {
 			res.send(cachedData);
 		}
 		else {
-			db.query(`SELECT * FROM task WHERE assignee_id=?`, assignee_id,
-				(error: mysql.MysqlError | null, results: any) => {
+			getBuilder()
+				.select(['*'])
+				.from('task')
+				.where({
+					'assignee_id': assignee_id
+				})
+				.execute()
+				.then((results: any) => {
 					const response: TasksSchemas = {
 						tasks: {}
 					};
@@ -41,8 +46,7 @@ router.get('/', (req: express.Request, res: express.Response) => {
 					}
 
 					res.json(response);
-				}
-			);
+				});
 		}
 	});
 });
@@ -56,34 +60,32 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 			res.send(cachedData);
 		}
 		else {
-			db.query(`
-				SELECT 
-					task.*,
-					assignee.name as assignee_name,
-					author.name as author_name,
-					status.name as status_name,
-					project.name as project_name,
-					project.author_id as project_author_id,
-					project.description as project_description,
-					project.author_id as project_author_id,
-					project.created_at as project_created_at,
-					project.updated_at as project_updated_at,
-					priority.value as priority_value
-				FROM task 
-					LEFT JOIN user as assignee
-						ON task.assignee_id = assignee.id
-					LEFT JOIN user as author
-						ON task.author_id = author.id
-					LEFT JOIN status
-						ON task.status_id = status.id
-					LEFT JOIN project
-						ON task.project_id = project.id
-					LEFT JOIN priority
-						ON task.priority_id = priority.id
-				WHERE task.id=? 
-				LIMIT 1`,
-				taskId,
-				(error: mysql.MysqlError | null, results: any) => {
+			getBuilder()
+				.select([
+					'task.*',
+					'assignee.name as assignee_name',
+					'author.name as author_name',
+					'status.name as status_name',
+					'project.name as project_name',
+					'project.author_id as project_author_id',
+					'project.description as project_description',
+					'project.author_id as project_author_id',
+					'project.created_at as project_created_at',
+					'project.updated_at as project_updated_at',
+					'priority.value as priority_value',
+				])
+				.from('task')
+				.join('user as assignee', 'task.assignee_id', 'assignee.id')
+				.join('user as author', 'task.author_id', 'author.id')
+				.join('status', 'task.status_id', 'status.id')
+				.join('project', 'task.project_id', 'project.id')
+				.join('priority', 'task.priority_id', 'priority.id')
+				.where({
+					'task.id': taskId
+				})
+				.limit(1)
+				.execute()
+				.then((results: any) => {
 					const response: TasksSchemas = {
 						tasks: {},
 						users: {},
@@ -140,8 +142,7 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 					}
 
 					res.json(response);
-				}
-			);
+				});
 		}
 	});
 });

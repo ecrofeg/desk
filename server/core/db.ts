@@ -9,7 +9,7 @@ const db = mysql.createConnection({
 });
 
 interface WhereClause {
-	[colName:string]: any;
+	[colName: string]: any;
 }
 
 class QueryBuilder {
@@ -29,8 +29,15 @@ class QueryBuilder {
 		return this;
 	}
 
-	from(table: string): QueryBuilder {
-		this._query.push(`FROM ${table}`);
+	from(table: string, as?: string): QueryBuilder {
+		let query = `FROM ${table}`;
+
+		if (as) {
+			query += `as ${as}`;
+		}
+
+		this._query.push(query);
+
 		return this;
 	}
 
@@ -47,12 +54,8 @@ class QueryBuilder {
 		return this;
 	}
 
-	join() {
-
-	}
-
-	add(query: string): QueryBuilder {
-		this._query.push(query);
+	join(table: string, from: string, to: string, type: string = 'LEFT') {
+		this._query.push(`${type} JOIN ${table} ON ${from} = ${to}`);
 		return this;
 	}
 
@@ -61,7 +64,7 @@ class QueryBuilder {
 	}
 
 	execute(): Promise<Array<Object>> {
-		return new Promise<Array<Object>>((resolve: Function, reject: Function) => {
+		const promise: Promise<Array<Object>> = new Promise<Array<Object>>((resolve: Function, reject: Function) => {
 			this.connection.query(this.buildQuery(), (error: mysql.MysqlError | null, results: any) => {
 				if (error) {
 					reject(error);
@@ -74,17 +77,16 @@ class QueryBuilder {
 				}
 			});
 		});
+
+		this.clear();
+
+		return promise;
+	}
+
+	clear() {
+		this._query = [];
 	}
 }
-
-const builder = new QueryBuilder(db);
-builder.select(['id', 'name'], 'project').where({
-	name: 'Desk Project'
-}).limit(1);
-
-db.query(builder.buildQuery(), (error, results) => {
-	console.log(results);
-});
 
 export const getBuilder = (connection: Connection = db): QueryBuilder => {
 	return new QueryBuilder(connection);
