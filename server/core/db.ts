@@ -63,8 +63,8 @@ class QueryBuilder {
 		return this._query.join(' ');
 	}
 
-	execute(): Promise<Array<Object>> {
-		const promise: Promise<Array<Object>> = new Promise<Array<Object>>((resolve: Function, reject: Function) => {
+	execute(): Promise<Object[]> {
+		const promise: Promise<Object[]> = new Promise<Object[]>((resolve: Function, reject: Function) => {
 			this.connection.query(this.buildQuery(), (error: mysql.MysqlError | null, results: any) => {
 				if (error) {
 					reject(error);
