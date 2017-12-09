@@ -11,5 +11,5 @@ export default interface Task {
 	updated_at: string;
 
 	status_name?: string;
-	priority_value?: number;
+	priority?: number;
 }

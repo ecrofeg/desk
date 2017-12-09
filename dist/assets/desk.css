@@ -1,1 +1,135 @@
-*{padding:0;margin:0}body,html{width:100%;height:100%}body{font-family:Roboto,sans-serif;background-color:#f5f5f5;color:#212121}a:visited{color:inherit}.desk-root{-webkit-box-flex:1;-ms-flex:1;flex:1}.desk-root .toolbar{position:static}.desk-wrapper{display:-webkit-box;display:-ms-flexbox;display:flex}.sidebar{width:250px}.sidebar .MuiDrawer-paper-2{position:static}.sidebar-header{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;height:64px;padding-left:16px}.sidebar-header-link{color:inherit;font-weight:300;text-decoration:none}.sidebar-link{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:start;-ms-flex-pack:start;justify-content:flex-start;-webkit-box-flex:1;-ms-flex:1;flex:1;padding:12px 16px;text-decoration:none}.sidebar-link__wrapper{padding:0!important}.desk-content{position:relative;margin:20px 0 0;padding:20px 30px}.progress{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;position:absolute;top:0;left:0;right:0;bottom:0;cursor:wait;background:hsla(0,0%,100%,.8);-webkit-transition:opacity .2s ease-in-out,visibility .2s ease-in-out;transition:opacity .2s ease-in-out,visibility .2s ease-in-out}.progress-hidden{opacity:0;visibility:hidden}.task{padding:24px;position:relative}.task-name{font-size:30px;font-weight:300;line-height:35px;margin-bottom:24px}.dashboard{position:relative}.dashboard-link,.dashboard-link:visited{color:#2196f3}
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body,
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f5f5;
+  color: #212121;
+}
+
+a:visited {
+  color: inherit;
+}
+
+.desk-root {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+
+.desk-root .toolbar {
+  position: static;
+}
+
+.desk-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.sidebar {
+  width: 250px;
+}
+
+.sidebar .MuiDrawer-paper-2 {
+  position: static;
+}
+
+.sidebar-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 64px;
+  padding-left: 16px;
+}
+
+.sidebar-header-link {
+  color: inherit;
+  font-weight: 300;
+  text-decoration: none;
+}
+
+.sidebar-link {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  padding: 12px 16px;
+  text-decoration: none;
+}
+
+.sidebar-link__wrapper {
+  padding: 0 !important;
+}
+
+.desk-content {
+  position: relative;
+  margin: 20px 0 0 0;
+  padding: 20px 30px;
+}
+
+.progress {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  cursor: wait;
+  background: rgba(255, 255, 255, 0.8);
+  -webkit-transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+}
+
+.progress-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.task {
+  padding: 24px;
+  position: relative;
+}
+
+.task-name {
+  font-size: 30px;
+  font-weight: 300;
+  line-height: 35px;
+  margin-bottom: 24px;
+}
+
+.dashboard {
+  position: relative;
+}
+
+.dashboard-link,
+.dashboard-link:visited {
+  color: #2196f3;
+}

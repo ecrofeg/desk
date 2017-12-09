@@ -26,8 +26,16 @@ router.get('/', (req: express.Request, res: express.Response) => {
 		}
 		else {
 			getBuilder()
-				.select(['*'])
+				.select([
+					'task.id',
+					'task.name',
+					'task.description',
+					'task.created_at',
+					'task.updated_at',
+					'priority.value as priority'
+				])
 				.from('task')
+				.join('priority', 'task.priority_id', 'priority.id')
 				.where({
 					'assignee_id': assignee_id
 				})
@@ -42,7 +50,7 @@ router.get('/', (req: express.Request, res: express.Response) => {
 							response.tasks[task.id] = <Task>task;
 						});
 
-						redis.set(cacheKey, JSON.stringify(response));
+						// redis.set(cacheKey, JSON.stringify(response));
 					}
 
 					res.json(response);
@@ -72,7 +80,7 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 					'project.author_id as project_author_id',
 					'project.created_at as project_created_at',
 					'project.updated_at as project_updated_at',
-					'priority.value as priority_value',
+					'priority.value as priority',
 				])
 				.from('task')
 				.join('user as assignee', 'task.assignee_id', 'assignee.id')
@@ -116,7 +124,7 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 							created_at: task.created_at,
 							updated_at: task.updated_at,
 							status_name: task.status_name,
-							priority_value: task.priority_value
+							priority: task.priority
 						};
 
 						response.users[task.author_id] = {
@@ -138,7 +146,7 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 							updated_at: task.project_updated_at
 						};
 
-						redis.set(cacheKey, JSON.stringify(response));
+						// redis.set(cacheKey, JSON.stringify(response));
 					}
 
 					res.json(response);

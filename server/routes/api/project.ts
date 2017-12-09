@@ -17,7 +17,7 @@ router.get('/', (req: express.Request, res: express.Response) => {
 
 				if (results instanceof Array && results.length) {
 					projects = results;
-					redis.set(cacheKey, JSON.stringify(projects));
+					// redis.set(cacheKey, JSON.stringify(projects));
 				}
 
 				res.json(projects);
@@ -46,7 +46,7 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 
 					if (results instanceof Array && results.length) {
 						project = results.shift();
-						redis.set(cacheKey, JSON.stringify(project));
+						// redis.set(cacheKey, JSON.stringify(project));
 					}
 
 					res.json(project);

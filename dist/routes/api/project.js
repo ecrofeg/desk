@@ -15,7 +15,7 @@ router.get('/', function (req, res) {
                 var projects = [];
                 if (results instanceof Array && results.length) {
                     projects = results;
-                    redis_1.default.set(cacheKey, JSON.stringify(projects));
+                    // redis.set(cacheKey, JSON.stringify(projects));
                 }
                 res.json(projects);
             });
@@ -40,7 +40,7 @@ router.get('/:id', function (req, res) {
                 var project = null;
                 if (results instanceof Array && results.length) {
                     project = results.shift();
-                    redis_1.default.set(cacheKey, JSON.stringify(project));
+                    // redis.set(cacheKey, JSON.stringify(project));
                 }
                 res.json(project);
             });
