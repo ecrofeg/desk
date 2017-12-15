@@ -55,7 +55,7 @@ router.get('/:id', function (req, res) {
     });
 });
 router.put('/', function (req, res) {
-    var project = req.query;
+    var project = req.body;
     db_1.getBuilder()
         .insert('project', project)
         .execute()

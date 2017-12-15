@@ -64,7 +64,7 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 });
 
 router.put('/', (req: express.Request, res: express.Response) => {
-	const project: NewProject = req.query;
+	const project: NewProject = req.body;
 
 	getBuilder()
 		.insert('project', project)

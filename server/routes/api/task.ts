@@ -160,7 +160,7 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 });
 
 router.put('/', (req: express.Request, res: express.Response) => {
-	const task: NewTask = req.query;
+	const task: NewTask = req.body;
 
 	getBuilder()
 		.insert('task', task)
