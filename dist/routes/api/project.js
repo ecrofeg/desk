@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var db_1 = require("../../core/db");
 var redis_1 = require("../../core/redis");
+var api_1 = require("../../core/api");
 var router = express.Router();
 router.get('/', function (req, res) {
     var cacheKey = "projects";
@@ -11,7 +12,12 @@ router.get('/', function (req, res) {
             res.send(cachedData);
         }
         else {
-            db_1.getBuilder().select(['*']).from('project').execute().then(function (results) {
+            db_1.getBuilder()
+                .select(['*'])
+                .from('project')
+                .execute()
+                .catch(function (reason) { return api_1.handleError(res, reason); })
+                .then(function (results) {
                 var projects = [];
                 if (results instanceof Array && results.length) {
                     projects = results;
@@ -36,6 +42,7 @@ router.get('/:id', function (req, res) {
                 .where({ id: 1 })
                 .limit(1)
                 .execute()
+                .catch(function (reason) { return api_1.handleError(res, reason); })
                 .then(function (results) {
                 var project = null;
                 if (results instanceof Array && results.length) {
@@ -45,6 +52,16 @@ router.get('/:id', function (req, res) {
                 res.json(project);
             });
         }
+    });
+});
+router.put('/', function (req, res) {
+    var project = req.query;
+    db_1.getBuilder()
+        .insert('project', project)
+        .execute()
+        .catch(function (reason) { return api_1.handleError(res, reason); })
+        .then(function (objectId) {
+        res.json(objectId);
     });
 });
 exports.default = router;

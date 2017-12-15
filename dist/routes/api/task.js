@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var db_1 = require("../../core/db");
 var redis_1 = require("../../core/redis");
+var api_1 = require("../../core/api");
 var router = express.Router();
 router.get('/', function (req, res) {
     var assignee_id = req.query.assignee_id;
@@ -27,6 +28,7 @@ router.get('/', function (req, res) {
                 'assignee_id': assignee_id
             })
                 .execute()
+                .catch(function (reason) { return api_1.handleError(res, reason); })
                 .then(function (results) {
                 var response = {
                     tasks: {}
@@ -75,6 +77,7 @@ router.get('/:id', function (req, res) {
             })
                 .limit(1)
                 .execute()
+                .catch(function (reason) { return api_1.handleError(res, reason); })
                 .then(function (results) {
                 var response = {
                     tasks: {},
@@ -125,6 +128,7 @@ router.put('/', function (req, res) {
     db_1.getBuilder()
         .insert('task', task)
         .execute()
+        .catch(function (reason) { return api_1.handleError(res, reason); })
         .then(function (objectId) {
         res.json(objectId);
     });

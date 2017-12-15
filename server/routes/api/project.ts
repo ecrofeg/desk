@@ -1,6 +1,8 @@
 import * as express from 'express';
 import { getBuilder } from '../../core/db';
+import NewProject from '../../schemas/NewProject';
 import redis from '../../core/redis';
+import { handleError } from '../../core/api';
 
 const router = express.Router();
 
@@ -12,16 +14,21 @@ router.get('/', (req: express.Request, res: express.Response) => {
 			res.send(cachedData);
 		}
 		else {
-			getBuilder().select(['*']).from('project').execute().then((results: any) => {
-				let projects: Object[] = [];
+			getBuilder()
+				.select(['*'])
+				.from('project')
+				.execute()
+				.catch((reason: any) => handleError(res, reason))
+				.then((results: any) => {
+					let projects: Object[] = [];
 
-				if (results instanceof Array && results.length) {
-					projects = results;
-					// redis.set(cacheKey, JSON.stringify(projects));
-				}
+					if (results instanceof Array && results.length) {
+						projects = results;
+						// redis.set(cacheKey, JSON.stringify(projects));
+					}
 
-				res.json(projects);
-			});
+					res.json(projects);
+				});
 		}
 	});
 });
@@ -41,6 +48,7 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 				.where({ id: 1 })
 				.limit(1)
 				.execute()
+				.catch((reason: any) => handleError(res, reason))
 				.then((results: any) => {
 					let project: any = null;
 
@@ -53,6 +61,18 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 				});
 		}
 	});
+});
+
+router.put('/', (req: express.Request, res: express.Response) => {
+	const project: NewProject = req.query;
+
+	getBuilder()
+		.insert('project', project)
+		.execute()
+		.catch((reason: any) => handleError(res, reason))
+		.then((objectId: any) => {
+			res.json(objectId);
+		});
 });
 
 export default router;

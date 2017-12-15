@@ -4,6 +4,7 @@ import redis from '../../core/redis';
 import Task from '../../schemas/Task';
 import NewTask from '../../schemas/NewTask';
 import Project from '../../schemas/Project';
+import { handleError } from '../../core/api';
 
 const router = express.Router();
 
@@ -41,6 +42,7 @@ router.get('/', (req: express.Request, res: express.Response) => {
 					'assignee_id': assignee_id
 				})
 				.execute()
+				.catch((reason: any) => handleError(res, reason))
 				.then((results: any) => {
 					const response: TasksResponse = {
 						tasks: {}
@@ -94,6 +96,7 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 				})
 				.limit(1)
 				.execute()
+				.catch((reason: any) => handleError(res, reason))
 				.then((results: any) => {
 					const response: TasksResponse = {
 						tasks: {},
@@ -162,6 +165,7 @@ router.put('/', (req: express.Request, res: express.Response) => {
 	getBuilder()
 		.insert('task', task)
 		.execute()
+		.catch((reason: any) => handleError(res, reason))
 		.then((objectId: any) => {
 			res.json(objectId);
 		});
