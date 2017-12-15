@@ -12,11 +12,33 @@ interface WhereClause {
 	[colName: string]: any;
 }
 
+export interface InsertValuesClause {
+	[colName: string]: string|number;
+}
+
 class QueryBuilder {
 	private _query: string[] = [];
 
 	constructor(public connection: Connection) {
 		this.connection = connection;
+	}
+
+	escape(value: any) {
+		return this.connection.escape(value);
+	}
+
+	insert(table: string, values: InsertValuesClause) {
+		const columnsPack: string[] = [];
+		const valuesPack: string[] = [];
+
+		for (const colName in values) {
+			columnsPack.push(colName);
+			valuesPack.push(this.escape(values[colName]));
+		}
+
+		this._query.push(`INSERT INTO ${table} (${columnsPack.join(', ')}) VALUES (${valuesPack.join(', ')})`);
+
+		return this;
 	}
 
 	select(columns: string[], from?: string): QueryBuilder {
@@ -71,6 +93,9 @@ class QueryBuilder {
 				}
 				else if (results instanceof Array) {
 					resolve(results);
+				}
+				else if (typeof results === 'object' && 'insertId' in results) {
+					resolve(results.insertId);
 				}
 				else {
 					reject();

@@ -13,6 +13,19 @@ var QueryBuilder = /** @class */ (function () {
         this._query = [];
         this.connection = connection;
     }
+    QueryBuilder.prototype.escape = function (value) {
+        return this.connection.escape(value);
+    };
+    QueryBuilder.prototype.insert = function (table, values) {
+        var columnsPack = [];
+        var valuesPack = [];
+        for (var colName in values) {
+            columnsPack.push(colName);
+            valuesPack.push(this.escape(values[colName]));
+        }
+        this._query.push("INSERT INTO " + table + " (" + columnsPack.join(', ') + ") VALUES (" + valuesPack.join(', ') + ")");
+        return this;
+    };
     QueryBuilder.prototype.select = function (columns, from) {
         this._query.push("SELECT " + columns.join(', '));
         if (from) {
@@ -55,6 +68,9 @@ var QueryBuilder = /** @class */ (function () {
                 }
                 else if (results instanceof Array) {
                     resolve(results);
+                }
+                else if (typeof results === 'object' && 'insertId' in results) {
+                    resolve(results.insertId);
                 }
                 else {
                     reject();

@@ -120,4 +120,13 @@ router.get('/:id', function (req, res) {
         }
     });
 });
+router.put('/', function (req, res) {
+    var task = req.query;
+    db_1.getBuilder()
+        .insert('task', task)
+        .execute()
+        .then(function (objectId) {
+        res.json(objectId);
+    });
+});
 exports.default = router;

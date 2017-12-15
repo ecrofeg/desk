@@ -2,11 +2,12 @@ import * as express from 'express';
 import { getBuilder } from '../../core/db';
 import redis from '../../core/redis';
 import Task from '../../schemas/Task';
+import NewTask from '../../schemas/NewTask';
 import Project from '../../schemas/Project';
 
 const router = express.Router();
 
-interface TasksSchemas {
+interface TasksResponse {
 	tasks: {
 		[taskId: number]: Task
 	};
@@ -41,7 +42,7 @@ router.get('/', (req: express.Request, res: express.Response) => {
 				})
 				.execute()
 				.then((results: any) => {
-					const response: TasksSchemas = {
+					const response: TasksResponse = {
 						tasks: {}
 					};
 
@@ -94,7 +95,7 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 				.limit(1)
 				.execute()
 				.then((results: any) => {
-					const response: TasksSchemas = {
+					const response: TasksResponse = {
 						tasks: {},
 						users: {},
 						projects: {}
@@ -153,6 +154,17 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 				});
 		}
 	});
+});
+
+router.put('/', (req: express.Request, res: express.Response) => {
+	const task: NewTask = req.query;
+
+	getBuilder()
+		.insert('task', task)
+		.execute()
+		.then((objectId: any) => {
+			res.json(objectId);
+		});
 });
 
 export default router;
