@@ -1,10 +1,17 @@
 import * as express from 'express';
 import { getBuilder } from '../../core/db';
 import NewProject from '../../schemas/NewProject';
+import Project from '../../schemas/Project';
 import redis from '../../core/redis';
 import { handleError } from '../../core/api';
 
 const router = express.Router();
+
+interface ProjectsResponse {
+	projects: {
+		[projectId: number]: Project;
+	};
+}
 
 router.get('/', (req: express.Request, res: express.Response) => {
 	const cacheKey: string = `projects`;
@@ -20,14 +27,19 @@ router.get('/', (req: express.Request, res: express.Response) => {
 				.execute()
 				.catch((reason: any) => handleError(res, reason))
 				.then((results: any) => {
-					let projects: Object[] = [];
+					const response: ProjectsResponse = {
+						projects: {}
+					};
 
 					if (results instanceof Array && results.length) {
-						projects = results;
+						results.forEach((project: Project) => {
+							response.projects[project.id] = project;
+						});
+
 						// redis.set(cacheKey, JSON.stringify(projects));
 					}
 
-					res.json(projects);
+					res.json(response);
 				});
 		}
 	});
@@ -50,14 +62,18 @@ router.get('/:id', (req: express.Request, res: express.Response) => {
 				.execute()
 				.catch((reason: any) => handleError(res, reason))
 				.then((results: any) => {
-					let project: any = null;
+					let project: Project;
+					const response: ProjectsResponse = {
+						projects: {}
+					};
 
 					if (results instanceof Array && results.length) {
 						project = results.shift();
+						response.projects[project.id] = project;
 						// redis.set(cacheKey, JSON.stringify(project));
 					}
 
-					res.json(project);
+					res.json(response);
 				});
 		}
 	});

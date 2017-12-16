@@ -124,7 +124,7 @@ router.get('/:id', function (req, res) {
     });
 });
 router.put('/', function (req, res) {
-    var task = req.query;
+    var task = req.body;
     db_1.getBuilder()
         .insert('task', task)
         .execute()

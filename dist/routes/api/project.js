@@ -18,12 +18,16 @@ router.get('/', function (req, res) {
                 .execute()
                 .catch(function (reason) { return api_1.handleError(res, reason); })
                 .then(function (results) {
-                var projects = [];
+                var response = {
+                    projects: {}
+                };
                 if (results instanceof Array && results.length) {
-                    projects = results;
+                    results.forEach(function (project) {
+                        response.projects[project.id] = project;
+                    });
                     // redis.set(cacheKey, JSON.stringify(projects));
                 }
-                res.json(projects);
+                res.json(response);
             });
         }
     });
@@ -44,12 +48,16 @@ router.get('/:id', function (req, res) {
                 .execute()
                 .catch(function (reason) { return api_1.handleError(res, reason); })
                 .then(function (results) {
-                var project = null;
+                var project;
+                var response = {
+                    projects: {}
+                };
                 if (results instanceof Array && results.length) {
                     project = results.shift();
+                    response.projects[project.id] = project;
                     // redis.set(cacheKey, JSON.stringify(project));
                 }
-                res.json(project);
+                res.json(response);
             });
         }
     });
